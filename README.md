@@ -20,6 +20,14 @@ This framework helps teams release AI capabilities with clearer control, traceab
   - Accountability design for human oversight
   - Monitoring and auditability expectations
 
+## Example usage (illustrative)
+
+The reference code in `src/` is a simple scaffold. Example (conceptual):
+
+- Define risk inputs (safety impact, regulatory exposure, observability maturity, fallback readiness)
+- Compute a risk tier (low / medium / high)
+- Apply stricter release gates for higher-risk tiers
+
 ## Repository structure
 - `docs/overview.md` — framework overview
 - `docs/risk-model.md` — risk dimensions and tiers
