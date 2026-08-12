@@ -1,6 +1,6 @@
 # Operational Gating Matrix
 
-This document translates the framework into a concrete, risk-tiered release model that a team can use during go or no-go review.
+This document translates the framework into a concrete, risk-tiered release model that a team can use during release review.
 
 ## Gate definitions
 
@@ -21,26 +21,35 @@ This document translates the framework into a concrete, risk-tiered release mode
 |---|---|---|---|---|
 | Low | G1, G2, G4 | Scope and limitations note, basic monitoring plan | Product, engineering | Limited rollout preferred, rollback available |
 | Medium | G1, G2, G3, G4, G5, G8 | Test evidence for degraded behavior, escalation path, monitoring thresholds | Product, engineering, operations, quality or compliance as applicable | Phased rollout, enhanced review frequency, launch criteria explicitly documented |
-| High | G1, G2, G3, G4, G5, G6, G7, G8 | Formal evidence package, validated rollback or disablement, explicit accountability map, incident playbook drill or equivalent proof | Product, engineering, operations, quality, safety, security, compliance or legal as applicable | Strict rollout control, explicit go or no-go meeting, rapid disablement path, mandatory post-release review |
+| High | G1, G2, G3, G4, G5, G6, G7, G8 | Formal evidence package, validated rollback or disablement, explicit accountability map, incident playbook drill or equivalent proof | Product, engineering, operations, quality, safety, security, compliance or legal as applicable | Strict rollout control, explicit release decision meeting, rapid disablement path, mandatory post-release review |
 
-## Suggested go or no-go logic
+## Suggested release decision logic
+
+The executable policy distinguishes missing hard-gate evidence from an explicit terminal release prohibition. This keeps the five decision outcomes aligned with the release decision record.
 
 ### Low risk
-- Go if all required gates are satisfied and there is a rollback path.
-- Conditional go only if the open items are minor and do not affect control, monitoring, or scope clarity.
+- **Release** if all required gates are satisfied and there is a rollback path.
+- **Release with conditions** only if open items are non-hard-gate items and the conditions are bounded, enforceable, owned, and monitored.
+- **Hold** if a hard gate such as monitoring readiness is incomplete.
 
 ### Medium risk
-- Go only if all required gates are satisfied.
-- Conditional go only with named owner, deadline, and compensating control.
-- No-go if degraded-mode, monitoring, or escalation design is incomplete.
+- **Release** only if all required gates are satisfied.
+- **Release with conditions** only when every hard gate passes and remaining required actions can be bounded by named owner, deadline, scope, monitoring, and stop conditions.
+- **Hold** if degraded-mode, monitoring, or escalation readiness is incomplete.
 
 ### High risk
-- Go only if all required gates are satisfied and accountable approvers explicitly sign off.
-- No-go if any of the following are missing:
+- **Release** only if all required gates are satisfied and accountable approvers explicitly sign off.
+- **Hold** if any required hard gate is incomplete, including:
   - safe degraded behavior,
   - production monitoring ownership,
   - incident disablement or rollback mechanism,
   - named accountable owner for post-release incidents.
+
+Across all tiers:
+- **Do not release** when the decision context records a critical failure, prohibited condition, or unacceptable residual risk.
+- **Defer decision** only when the decision owner intentionally postpones judgment until specified evidence or an external dependency becomes available.
+
+A missing hard gate is therefore a **Hold** by default, not automatically **Do not release**. A terminal outcome should be supported by an explicit reason rather than inferred from missing evidence alone.
 
 ## Evidence package checklist
 
