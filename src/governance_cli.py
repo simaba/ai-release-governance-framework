@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict
 
-from gate_policy import GATE_LABELS, assess_release, build_risk_inputs
+from gate_policy import GATE_LABELS, assess_release, build_decision_context, build_risk_inputs
 
 
 def _load_profile(path: Path) -> Dict[str, Any]:
@@ -16,9 +16,22 @@ def _load_profile(path: Path) -> Dict[str, Any]:
 
 
 def _serialize_report(profile: Dict[str, Any]) -> Dict[str, Any]:
+    risk_inputs = profile.get("risk_inputs")
+    if not isinstance(risk_inputs, dict):
+        raise ValueError("risk_inputs must be an object")
+
+    evidence = profile.get("evidence", {})
+    if not isinstance(evidence, dict):
+        raise ValueError("evidence must be an object")
+
+    decision_context = profile.get("decision_context", {})
+    if not isinstance(decision_context, dict):
+        raise ValueError("decision_context must be an object")
+
     assessment = assess_release(
-        build_risk_inputs(profile["risk_inputs"]),
-        profile.get("evidence", {}),
+        build_risk_inputs(risk_inputs),
+        evidence,
+        build_decision_context(decision_context),
     )
 
     return {

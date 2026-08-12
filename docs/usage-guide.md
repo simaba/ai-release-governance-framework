@@ -27,6 +27,38 @@ Example JSON output:
 python governance_cli.py ../examples/ivi_voice_assistant_release_profile.json --format json
 ```
 
+## CLI decision semantics
+
+The CLI uses the same five outcomes as the release decision record:
+
+| Framework outcome | JSON `decision` value |
+|---|---|
+| Release | `release` |
+| Release with conditions | `release_with_conditions` |
+| Hold | `hold` |
+| Do not release | `do_not_release` |
+| Defer decision | `defer` |
+
+Gate evidence alone produces **Release**, **Release with conditions**, or **Hold**. A missing hard gate produces **Hold** because missing evidence or control readiness is remediable unless the decision owner records a terminal condition.
+
+Use the optional `decision_context` object for facts that cannot be inferred safely from Boolean gate evidence:
+
+```json
+{
+  "decision_context": {
+    "critical_failure": false,
+    "prohibited_condition": false,
+    "unacceptable_residual_risk": false,
+    "defer_reason": null
+  }
+}
+```
+
+- Set a terminal Boolean only when the evidence supports that conclusion. Any of these fields produces **Do not release**.
+- Set `defer_reason` only when the decision owner intentionally postpones judgment for named evidence or a dependency.
+- If both a terminal condition and `defer_reason` are present, **Do not release** takes precedence so a known terminal condition is not hidden by deferral.
+- Existing profiles without `decision_context` remain valid.
+
 ## Suggested review package
 
 A lightweight release package can contain:

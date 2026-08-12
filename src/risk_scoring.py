@@ -23,6 +23,19 @@ class RiskInputs:
     observability_maturity: int  # 1-5 (higher is better)
     fallback_readiness: int  # 1-5 (higher is better)
 
+    def __post_init__(self) -> None:
+        for field_name in (
+            "safety_impact",
+            "regulatory_exposure",
+            "uncertainty_sensitivity",
+            "operational_complexity",
+            "observability_maturity",
+            "fallback_readiness",
+        ):
+            value = getattr(self, field_name)
+            if isinstance(value, bool) or not isinstance(value, int) or not 1 <= value <= 5:
+                raise ValueError(f"{field_name} must be an integer from 1 to 5")
+
 
 def score_risk(inputs: RiskInputs) -> tuple[int, RiskTier]:
     """
